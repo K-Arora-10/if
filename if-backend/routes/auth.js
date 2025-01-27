@@ -67,4 +67,70 @@ Router.post(
 
 
 
+Router.post(
+  '/login',
+  [
+    body('email').isEmail().withMessage('Not a valid e-mail address'),
+    body('email').notEmpty().withMessage('Email is required'),
+    body('password')
+      .notEmpty().withMessage('Password is required'),
+
+  ],
+  async(req,res)=>{
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      success=false;
+      // Return validation errors
+      return res.status(400).json({success : success, errors: errors.array() });
+    }
+    success=false;
+    const {email,password}=req.body;
+    try{
+      let user = await User.findOne({email});
+      if(!user)
+      {
+        return res.status(400).json({error:'Please try to login with correct credentials'});
+      }
+
+      const comparePassword = await bcrypt.compare(password,user.password);
+      if(!comparePassword)
+      {
+        return res.status(400).json({error:'Please try to login with correct credentials'});
+      }
+
+      const data= { 
+        user:{
+          id:user.id
+        }
+      }
+      success=true;
+      const authtoken = jwt.sign(data,JWT_secret);
+      res.json({success,authtoken});
+
+    }catch(error){
+      console.error(err.message);
+      res.status(500).json({ error: 'Server error, please try again later.' });
+    }
+  }
+);
+
+
+
+Router.post(
+  '/getuser',fetchuser,
+  async(req,res)=>{
+    userId=req.user.id
+    try {
+      const user= await User.findById(userId).select("-password")
+      res.send(user)
+    } catch (error) {
+      console.error(err.message);
+      res.status(500).json({ error: 'Server error, please try again later.' });
+    }
+  }
+)
+
+
+
+
 module.exports = Router;

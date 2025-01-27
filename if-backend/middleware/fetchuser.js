@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const JWT_secret = "I@am$KrishArora@esKApe"
+const JWT_secret = "I@am$@esKApe"
 
 
 const fetchuser = (req,res,next)=>{
