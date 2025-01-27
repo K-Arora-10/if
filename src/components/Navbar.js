@@ -87,7 +87,7 @@ const Navbar = () => {
                   Home
                 </Link>
               </li>
-              <li class="nav-item dropdown">
+              {localStorage.getItem("token") && <li class="nav-item dropdown">
                 <a
                   class="nav-link dropdown-toggle"
                   href="/"
@@ -113,9 +113,9 @@ const Navbar = () => {
                     </Link>
                   </li>
                 </ul>
-              </li>
+              </li>}
             </ul>
-            {userDetails && <div className="text-light mx-2">
+            {localStorage.getItem("token") && userDetails && <div className="text-light mx-2">
               Hi {userDetails.name}
             </div>}
             {!localStorage.getItem("token") ? (
