@@ -4,8 +4,9 @@ const Router = express.Router();
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const JWT_secret = "I@am$@esKApe"
-const fetchuser = require('../middleware/fetchuser')
-
+// const fetchuser = require('../middleware/fetchuser')
+const fetchcompany = require('../middleware/fetchcompany')
+const Company = require('../models/Company');
 
 Router.post(
   '/fillForm',
@@ -52,5 +53,33 @@ Router.post(
     }
   }
 );
+
+
+
+Router.get('/getAllForms', fetchcompany, async (req, res) => {
+  try {
+      const companyId = req.company.id; // get company id from token
+      
+      // fetch company details using the companyId
+      const company = await Company.findById(companyId).select("name");
+      if (!company) {
+          return res.status(404).json({ error: "company not found" });
+      }
+      
+      const companyName = company.name; // get company name from db
+      
+      // find forms that match the company name
+      const forms = await Form.find({ company: companyName });
+
+      res.json(forms);
+  } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ error: "internal server error" });
+  }
+});
+
+
+
+
 
 module.exports = Router;

@@ -68,6 +68,7 @@ const Form = () => {
     "Company A": ["Role 1", "Role 2", "Role 3"],
     "Company B": ["Role 4", "Role 5"],
     "Company C": ["Role 6", "Role 7", "Role 8"],
+    "Company Name": ["Role 9", "Role 10", "Role 11"]
   };
 
   // Handle company selection
